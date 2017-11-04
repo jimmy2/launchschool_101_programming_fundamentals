@@ -47,7 +47,7 @@ loop do
   # Get loan amount
   loan = nil
   loop do
-    prompt("What's your loan amount? (How much have you borrowed?")
+    prompt("What's your loan amount? (How much have you borrowed?)")
     prompt("e.g. $30,000, 400000, $1045.50")
     loan = Kernel.gets().chomp()
     if validate_loan(loan)
@@ -92,8 +92,11 @@ loop do
         prompt("How many years is your loan?")
         years = Kernel.gets().chomp()
         if validate_duration(years)
-          loan_duration_months = (years.to_i * 12)
-          break
+          unless years.to_i == 0
+            loan_duration_months = (years.to_i * 12)
+            break
+          end
+          prompt("Please enter a number of years greater than zero (0):")
         else
           prompt("Please enter a number of years:")
         end
@@ -104,8 +107,11 @@ loop do
         prompt("How many months is your loan?")
         months = Kernel.gets().chomp()
         if validate_duration(months)
-          loan_duration_months = months.to_i
-          break
+          unless months.to_i == 0
+            loan_duration_months = months.to_i
+            break
+          end
+          prompt("Please enter a number of months greater than zero (0):")
         else
           prompt("Please enter a number of months:")
         end
@@ -118,8 +124,11 @@ loop do
         prompt("2/2: And how many months?")
         months = Kernel.gets().chomp()
         if validate_duration(years) && validate_duration(months)
-          loan_duration_months = (years.to_i * 12) + months.to_i
-          break
+          unless years.to_i == 0 && months.to_i == 0
+            loan_duration_months = (years.to_i * 12) + months.to_i
+            break
+          end
+          prompt("Please make sure both months and years are not zero (0):")
         else
           prompt("Please enter the years and months as numbers again:")
         end

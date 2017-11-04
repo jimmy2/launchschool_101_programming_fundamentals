@@ -1,0 +1,14 @@
+# calculator_bonus.yml
+
+welcome: "Welcome to the Calculator!"
+name: "Please enter your name..."
+valid_name: "Please enter a valid name."
+hi: "Hi %{name}!"
+first: "Please enter your first number..."
+second: "Please enter your second number..."
+valid_number: "Sorry, that doesn't look like a valid number."
+sorry: "Sorry, you must choose 1, 2, 3, or 4"
+operating: "%{operator_string} the two numbers..."
+result: "The result is: %{result}"
+again: "Do you want to use the Calculator again? (Y to use again)"
+thanks: "Thank you for using the Calculator"

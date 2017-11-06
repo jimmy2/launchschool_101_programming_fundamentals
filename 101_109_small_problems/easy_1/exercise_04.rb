@@ -1,6 +1,7 @@
 # 101-109 - Small Problems > Easy 1 > How Many?
 
-# Write a method that counts the number of occurrences of each element in a given array.
+# Write a method that counts the number of occurrences of each element
+# in a given array.
 # Once counted, print each element alongside the number of occurrences.
 
 

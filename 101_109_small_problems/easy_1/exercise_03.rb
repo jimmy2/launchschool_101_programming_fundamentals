@@ -1,6 +1,7 @@
 # 101-109 - Small Problems > Easy 1 > List of Digits
 
-# Write a method that takes one argument, a positive integer, and returns a list of the digits in the number.
+# Write a method that takes one argument, a positive integer,
+# and returns a list of the digits in the number.
 
 def digit_list(integer)
   integer = integer.to_s.split('')

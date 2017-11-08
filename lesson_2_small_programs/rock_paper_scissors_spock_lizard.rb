@@ -110,4 +110,4 @@ else
   prompt("The computer is the master!!!")
 end
 
-prompt("Thanks for the playing: rock, paper, scissors, spock, lizard!")
+prompt("Thanks for playing: rock, paper, scissors, spock, lizard!")

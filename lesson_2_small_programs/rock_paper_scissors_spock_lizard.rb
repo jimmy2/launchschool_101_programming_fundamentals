@@ -34,21 +34,29 @@ def get_choice(shorthand)
   VALID_CHOICES.key(shorthand).to_s
 end
 
-def display_and_return_results(player, computer)
+def return_results(player, computer)
   if win?(player, computer)
-    prompt("You won!")
     "player"
   elsif win?(computer, player)
-    prompt("Computer won!")
     "computer"
   else
-    prompt("It's a tie!")
     "tie"
   end
 end
 
+def display_results(outcome)
+  case outcome
+  when "player"
+    prompt("You won!")
+  when "computer"
+    prompt("Computer won!")
+  else
+    prompt("It's a tie!")
+  end
+end
+
 def win_or_wins(score)
-  score > 1 ? "wins" : "win"
+  score != 1 ? "wins" : "win"
 end
 
 computer_wins_total = 0
@@ -76,11 +84,12 @@ loop do
 
   computer_choice = VALID_CHOICES.keys.sample.to_s
 
-  system "clear"
+  system('clear') || system('cls') # For windows users too
 
   Kernel.puts("You chose: #{choice}; Computer chose: #{computer_choice}")
 
-  winner = display_and_return_results(choice, computer_choice)
+  winner = return_results(choice, computer_choice)
+  display_results(winner)
 
   if winner == "player"
     players_wins_total += 1

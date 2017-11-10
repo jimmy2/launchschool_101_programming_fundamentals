@@ -19,9 +19,9 @@
 =begin
 
 1. 'Not equal too' - a comparison operator. e.g. 3 != 2 => true
-2. 'Not' (e.g. not user, not logged in, etc)
+2. 'Not' (e.g. not user, not logged in, etc) !false => true
 3. Usually a destructive (mutating the caller) method.  But not always.
-4. 
-5. Usually a question for a method, e.g. has_key? or include? or start_with? expecting a return value.
-6. !! = true
+4. ternary operator (condition ? true : false)
+5. A method, e.g. has_key? or include? or start_with?
+6. !! => true (boolean value of something) !!nil => false
 =end

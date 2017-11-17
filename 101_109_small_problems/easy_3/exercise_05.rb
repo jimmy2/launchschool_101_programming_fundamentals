@@ -13,9 +13,8 @@ def square(integer)
 end
 
 def power_of_n(integer)
-  loop_times = integer - 1
-  answer = integer
-  loop_times.times do
+  answer = 1
+  integer.times do
     answer = multiply(answer, integer)
   end
   answer

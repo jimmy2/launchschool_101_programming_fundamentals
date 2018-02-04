@@ -42,7 +42,7 @@ INITIAL_MARKER = " "
 PLAYER_MARKER = "X"
 COMPUTER_MARKER = "O"
 
-FIRST_PLAYER = "player" # player, computer, choose
+FIRST_PLAYER = "choose" # player, computer, choose
 
 GAME_SIZES = { 1 => 3, 2 => 5, 3 => 9 }
 
@@ -63,7 +63,7 @@ def display_board(brd, size)
     puts ("     |" * size).chop
     puts "  " + sub_array.join("  |  ")
     puts ("     |" * size).chop
-    puts ("-----+" * size).chop + "-" if i < size #remove final border
+    puts ("-----+" * size).chop + "-" if i < size # remove final border
     i += 1
   end
   puts ""

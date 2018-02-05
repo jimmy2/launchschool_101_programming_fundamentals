@@ -41,23 +41,22 @@ WINNING_LINES =
 INITIAL_MARKER = " "
 PLAYER_MARKER = "X"
 COMPUTER_MARKER = "O"
+WINNING_SCORE = 5
 
 FIRST_PLAYER = "choose" # player, computer, choose
 
 GAME_SIZES = { 1 => 3, 2 => 5, 3 => 9 }
 
-scores = [0, 0]
+PLAY_AGAIN_CHOICES = { 1 => "yes", 2 => "no" }
+
+PLAYER_CHOICES = { 1 => "player", 2 => "computer" }
 
 def prompt(msg)
   puts "=> #{msg}"
 end
 
-# rubocop:disable Metrics/AbcSize,Lint/ParenthesesAsGroupedExpression
-def display_board(brd, size)
-  system("clear") || system("cls")
-  puts "You're an #{PLAYER_MARKER}.  The Computer is an #{COMPUTER_MARKER}"
-  puts ""
-  array = brd.values.each_slice(size).to_a
+# rubocop:disable Lint/ParenthesesAsGroupedExpression
+def print_small_board(array, size)
   i = 1
   array.each do |sub_array|
     puts ("     |" * size).chop
@@ -66,9 +65,25 @@ def display_board(brd, size)
     puts ("-----+" * size).chop + "-" if i < size # remove final border
     i += 1
   end
-  puts ""
 end
-# rubocop:enable Metrics/AbcSize,Lint/ParenthesesAsGroupedExpression
+
+def print_big_board(array, size)
+  i = 1
+  array.each do |sub_array|
+    puts " " + sub_array.join(" | ")
+    puts ("---+" * size).chop + "-" if i < size # remove final border
+    i += 1
+  end
+end
+# rubocop:enable Lint/ParenthesesAsGroupedExpression
+
+def display_board(brd, size)
+  system("clear") || system("cls")
+  puts "You're an #{PLAYER_MARKER}.  The Computer is an #{COMPUTER_MARKER}"
+  puts ""
+  array = brd.values.each_slice(size).to_a
+  size > 3 ? print_big_board(array, size) : print_small_board(array, size)
+end
 
 def initialize_board(board_size)
   new_board = {}
@@ -110,7 +125,14 @@ def find_at_risk_square(brd, line, marker, size)
   nil
 end
 
-# rubocop:disable Metrics/MethodLength,AbcSize,CyclomaticComplexity
+def middle_square(brd, size)
+  middle = ((size * size) / 2.0).ceil
+  if empty_squares(brd).include?(middle)
+    return middle
+  end
+end
+
+# rubocop:disable Metrics/MethodLength
 def comp_places_piece!(brd, size)
   square = nil
   lines_sub_array = GAME_SIZES.key(size) - 1
@@ -129,12 +151,8 @@ def comp_places_piece!(brd, size)
     end
   end
 
-  # pick the middle square
   if !square
-    middle = ((size * size) / 2.0).ceil
-    if empty_squares(brd).include?(middle)
-      square = middle
-    end
+    square = middle_square(brd, size)
   end
 
   # pick a random square
@@ -144,7 +162,7 @@ def comp_places_piece!(brd, size)
 
   brd[square] = COMPUTER_MARKER
 end
-# rubocop:enable Metrics/MethodLength,AbcSize,CyclomaticComplexity
+# rubocop:enable Metrics/MethodLength
 
 def board_full?(brd)
   empty_squares(brd).empty?
@@ -159,25 +177,25 @@ def detect_winner(brd, size)
   WINNING_LINES[lines_sub_array].each do |line|
     # line[0], line[1], line[2] = *line
     if brd.values_at(*line).count(PLAYER_MARKER) == size
-      return "Player"
+      return "player"
     elsif brd.values_at(*line).count(COMPUTER_MARKER) == size
-      return "Computer"
+      return "computer"
     end
   end
   nil
 end
 
 def place_piece!(brd, player, size)
-  player = player.downcase
   player == "player" ? player_places_piece!(brd) : comp_places_piece!(brd, size)
 end
 
 def alternate_player(player)
-  player.downcase == "player" ? "Computer" : "Player"
+  player == "player" ? "computer" : "player"
 end
 
 prompt "Welcome to Tic-Tac-Toe!"
-prompt "First to 5 wins is the champion."
+prompt "First to #{WINNING_SCORE} wins is the champion."
+scores = { "player" => 0, "computer" => 0 }
 
 loop do
   response = ""
@@ -199,19 +217,18 @@ loop do
   board = initialize_board(game_size)
 
   if FIRST_PLAYER == "choose"
+    current_player = ""
+    prompt "Who will go first?"
+    puts "1)  you"
+    puts "2)  computer"
     loop do
-      prompt "Who will go first?  The player or the computer?"
-      response = gets.chomp
-      if response.downcase.start_with?("p")
-        response = "player"
-        break
-      elsif response.downcase.start_with?("c")
-        response = "computer"
+      prompt "Choose 1, or 2."
+      response = gets.chomp.to_i
+      if PLAYER_CHOICES.key?(response)
+        current_player = PLAYER_CHOICES[response]
         break
       end
-      prompt "Please enter 'player' (p) or 'computer' (c)"
     end
-    current_player = response.downcase
   else
     current_player = FIRST_PLAYER
   end
@@ -227,19 +244,28 @@ loop do
 
   if someone_won?(board, game_size)
     winner = detect_winner(board, game_size)
-    prompt "#{winner} won!"
-    winner == "Player" ? scores[0] += 1 : scores[-1] += 1
-    prompt "Player #{scores[0]} : Computer #{scores[-1]}"
+    prompt "#{winner.capitalize} won!"
+    scores[winner.to_s] += 1
+    prompt "Player #{scores['player']} : Computer #{scores['computer']}"
   else
     prompt "It's a tie!"
   end
 
-  break if scores.any? { |score| score == 5 }
+  break if scores.values.any? { |score| score == WINNING_SCORE }
 
-  prompt "Play again? (y or n)"
-  answer = gets.chomp
-  break unless answer.downcase.start_with?("y")
+  prompt "Play again?"
+  puts "1) yes"
+  puts "2) no"
+  answer = nil
+  loop do
+    prompt "Choose 1 (yes), or 2 (no)."
+    answer = gets.chomp.to_i
+    if PLAY_AGAIN_CHOICES.key?(answer)
+      break
+    end
+  end
+  answer == 1 ? next : break
 end
 
-prompt "Final score: Player #{scores[0]} : Computer #{scores[-1]}"
+puts "Final score: Player #{scores['player']} : Computer #{scores['computer']}"
 prompt "Thanks for playing Tic Tac Toe.  Goodbye!"

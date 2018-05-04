@@ -12,15 +12,7 @@ def prompt(msg)
 end
 
 def initialize_deck(deck)
-  deck
-end
-
-def deal_cards(deck, cards = 1)
-  deck.sample(cards)
-end
-
-def update_deck(cards, deck)
-  deck - cards
+  deck.shuffle
 end
 
 def determine_winner(player, dealer)
@@ -94,10 +86,8 @@ end
 
 # Start game
 deck = initialize_deck(DECK)
-players_cards = deal_cards(deck, 2)
-deck = update_deck(players_cards, deck)
-dealers_cards = deal_cards(deck, 2)
-deck = update_deck(dealers_cards, deck)
+players_cards = deck.pop(2)
+dealers_cards = deck.pop(2)
 print_deal(players_cards, dealers_cards)
 loop do
   break if calculate_score(players_cards) == 21
@@ -105,10 +95,9 @@ loop do
   reply = gets.chomp.downcase
   break if reply == 's' || busted?(players_cards)
   if reply == 'h'
-    new_card = deal_cards(deck, 1)
-    prompt "You hit (#{face_value(new_card[0][1])})"
-    players_cards += new_card
-    deck = update_deck(players_cards, deck)
+    new_card = deck.pop
+    prompt "You hit (#{face_value(new_card[1])})"
+    players_cards << new_card
     sleep 2
     print_deal(players_cards, dealers_cards)
     break if busted?(players_cards)
@@ -120,14 +109,14 @@ if busted?(players_cards)
   prompt "You bust..."
 else
   prompt "The dealer turns over his hidden card..."
-  sleep 2
+  sleep 1
   loop do
     print_deal(players_cards, dealers_cards, false)
+    sleep 1
     if calculate_score(dealers_cards) < 17
-      new_card = deal_cards(deck, 1)
-      prompt "Dealer hits (#{face_value(new_card[0][1])})"
-      dealers_cards += new_card
-      deck = update_deck(dealers_cards, deck)
+      new_card = deck.pop
+      prompt "Dealer hits (#{face_value(new_card[1])})"
+      dealers_cards << new_card
       sleep 2
     end
     break if busted?(dealers_cards) || calculate_score(dealers_cards) >= 17

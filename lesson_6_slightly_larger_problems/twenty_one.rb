@@ -104,11 +104,11 @@ end
 # Start game
 prompt "Welcome to Twenty One!"
 prompt "First person to win #{WINNING_SCORE} games is the winner!"
-no_wins = { player: 0, dealer: 0, tie: 0 }
+win_data = { player: 0, dealer: 0, tie: 0 }
 loop do
   sleep 1
   puts ""
-  prompt "Round #{no_wins.values.reduce(:+) + 1}"
+  prompt "Round #{win_data.values.reduce(:+) + 1}"
   puts ""
   deck = initialize_deck(DECK)
   players_cards = deck.pop(2)
@@ -155,10 +155,10 @@ loop do
     prompt "The dealer busts..."
   end
   winner = determine_winner(player_scr, dealer_scr)
-  no_wins[winner] += 1
-  print_summary(player_scr, dealer_scr, winner, no_wins)
-  break if no_wins.values.any? { |score| score == WINNING_SCORE }
+  win_data[winner] += 1
+  print_summary(player_scr, dealer_scr, winner, win_data)
+  break if win_data.values.any? { |score| score == WINNING_SCORE }
 end
 puts ""
-prompt "#{no_wins.key(no_wins.values.max).to_s.capitalize} is the champion!"
+prompt "#{win_data.key(win_data.values.max).to_s.capitalize} is the champion!"
 prompt "Thanks for playing Twenty One.  Goodbye!"
